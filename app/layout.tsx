@@ -1,33 +1,44 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ClientTracingProvider } from '@/components/ClientTracingProvider';
 
 // Initialize HealOps OpenTelemetry on server-side
-if (typeof window === "undefined") {
-  require("../lib/tracing");
+if (typeof window === 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('../lib/tracing');
 }
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+    subsets: ['latin'],
+    variable: '--font-inter'
 });
 
 export const metadata: Metadata = {
-  title: "HealOps Next.js Demo | OpenTelemetry Integration",
-  description: "Professional demo showcasing HealOps OpenTelemetry SDK integration in Next.js 14",
-  keywords: ["HealOps", "OpenTelemetry", "Error Monitoring", "Next.js", "Demo"],
+    title: 'HealOps Next.js Demo | OpenTelemetry Integration',
+    description:
+        'Professional demo showcasing HealOps OpenTelemetry SDK integration in Next.js 14',
+    keywords: [
+        'HealOps',
+        'OpenTelemetry',
+        'Error Monitoring',
+        'Next.js',
+        'Demo'
+    ]
 };
 
 export default function RootLayout({
-  children,
+    children
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} font-sans antialiased bg-black text-zinc-50`}>
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" className="dark">
+            <body
+                className={`${inter.variable} font-sans antialiased bg-black text-zinc-50`}
+            >
+                <ClientTracingProvider>{children}</ClientTracingProvider>
+            </body>
+        </html>
+    );
 }
