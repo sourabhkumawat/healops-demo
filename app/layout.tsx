@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientTracingProvider } from '@/components/ClientTracingProvider';
 
-// Initialize HealOps OpenTelemetry on server-side
+// Initialize HealOps  on server-side
 if (typeof window === 'undefined') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('../lib/tracing');
@@ -15,16 +15,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: 'HealOps Next.js Demo | OpenTelemetry Integration',
+    title: 'HealOps Next.js Demo |  Integration',
     description:
-        'Professional demo showcasing HealOps OpenTelemetry SDK integration in Next.js 14',
-    keywords: [
-        'HealOps',
-        'OpenTelemetry',
-        'Error Monitoring',
-        'Next.js',
-        'Demo'
-    ]
+        'Professional demo showcasing HealOps  SDK integration in Next.js 14',
+    keywords: ['HealOps', '', 'Error Monitoring', 'Next.js', 'Demo']
 };
 
 export default function RootLayout({

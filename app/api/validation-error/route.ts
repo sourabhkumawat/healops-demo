@@ -70,3 +70,4 @@ export async function GET() {
     (error as any).missingParams = ['userId'];
     throw error;
 }
+

@@ -27,10 +27,10 @@ export default function Home() {
                         </h1>
                     </div>
                     <h2 className="text-3xl font-semibold text-zinc-100 mb-4">
-                        Next.js OpenTelemetry Demo
+                        Next.js  Demo
                     </h2>
                     <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-                        Professional demonstration of HealOps OpenTelemetry SDK
+                        Professional demonstration of HealOps  SDK
                         integration. Trigger realistic developer errors and see
                         how they're automatically captured and sent to HealOps.
                     </p>
@@ -40,7 +40,7 @@ export default function Home() {
                 <div className="max-w-4xl mx-auto mb-12">
                     <DemoCard
                         title="SDK Status"
-                        description="Current HealOps OpenTelemetry configuration"
+                        description="Current HealOps  configuration"
                         delay={0.2}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -85,7 +85,7 @@ export default function Home() {
                 <div className="max-w-4xl mx-auto mb-12">
                     <DemoCard
                         title="Error Demonstration"
-                        description="Click the buttons below to trigger realistic errors that developers commonly encounter. All errors are automatically captured by HealOps OpenTelemetry SDK with full context and stack traces."
+                        description="Click the buttons below to trigger realistic errors that developers commonly encounter. All errors are automatically captured by HealOps  SDK with full context and stack traces."
                         delay={0.4}
                     >
                         <ErrorButtons />
@@ -152,7 +152,7 @@ export default function Home() {
                     <p>
                         Built with Next.js 14 • Powered by{' '}
                         <span className="text-green-500 font-semibold">
-                            HealOps OpenTelemetry SDK
+                            HealOps  SDK
                         </span>
                     </p>
                 </motion.div>

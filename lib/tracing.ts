@@ -1,6 +1,6 @@
 import { initHealOpsOTel } from '@sourabhkumawat0105/healops-opentelemetry';
 
-// Initialize HealOps OpenTelemetry SDK
+// Initialize HealOps  SDK
 // This automatically handles:
 // - Unhandled errors
 // - Promise rejections
@@ -11,4 +11,4 @@ initHealOpsOTel({
     serviceName: 'healops-nextjs-demo'
 });
 
-console.log('✅ HealOps OpenTelemetry SDK initialized');
+console.log('✅ HealOps  SDK initialized');
