@@ -4,14 +4,23 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Database, Clock, Loader2 } from 'lucide-react';
+import {
+    AlertCircle,
+    Database,
+    Clock,
+    Loader2,
+    Shield,
+    FileX
+} from 'lucide-react';
 
 type ErrorType =
     | 'js-error'
     | 'db-error'
     | 'timeout'
     | 'client-js-error'
-    | 'client-promise-error';
+    | 'client-promise-error'
+    | 'validation-error'
+    | 'auth-error';
 
 interface ErrorState {
     loading: boolean;
@@ -25,7 +34,13 @@ export function ErrorButtons() {
         'db-error': { loading: false, result: null, isError: false },
         timeout: { loading: false, result: null, isError: false },
         'client-js-error': { loading: false, result: null, isError: false },
-        'client-promise-error': { loading: false, result: null, isError: false }
+        'client-promise-error': {
+            loading: false,
+            result: null,
+            isError: false
+        },
+        'validation-error': { loading: false, result: null, isError: false },
+        'auth-error': { loading: false, result: null, isError: false }
     });
 
     const triggerError = async (type: ErrorType, endpoint?: string) => {
@@ -44,12 +59,12 @@ export function ErrorButtons() {
                     isError: true
                 }
             }));
-            // Throw error on client-side to be captured by HealOps
-            // Use setTimeout to throw outside of the event handler context
+            // Realistic error: Accessing property on undefined/null
+            // Common mistake: Not checking if data exists before accessing nested properties
             setTimeout(() => {
-                throw new Error(
-                    'Sample client-side JavaScript error triggered for HealOps demo'
-                );
+                const userData = null; // Simulating failed API response
+                const userName = userData.profile.name; // TypeError: Cannot read property 'profile' of null
+                console.log(userName); // This never executes
             }, 0);
             return;
         }
@@ -63,16 +78,17 @@ export function ErrorButtons() {
                     isError: true
                 }
             }));
-            // Reject promise to be captured by HealOps
-            // Use setTimeout to reject outside of the event handler context
+            // Realistic error: Unhandled promise rejection from async operation
+            // Common mistake: Forgetting to handle errors in async/await or .then() chains
             setTimeout(() => {
-                Promise.reject(
-                    new Error(
-                        'Sample client-side promise rejection for HealOps demo'
-                    )
-                ).catch(() => {
-                    // Error will be caught by unhandledrejection handler
-                });
+                fetch('/api/nonexistent-endpoint')
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // This promise chain doesn't have .catch() - error will be unhandled
+                        const result = data.items.map((item: any) => item.id);
+                        return result;
+                    });
+                // Missing .catch() handler - promise rejection will be unhandled
             }, 0);
             return;
         }
@@ -81,7 +97,17 @@ export function ErrorButtons() {
         if (!endpoint) return;
 
         try {
-            const response = await fetch(endpoint);
+            // Special handling for validation error (POST request)
+            const fetchOptions: RequestInit =
+                type === 'validation-error'
+                    ? {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ email: '', age: 'invalid' }) // Invalid data to trigger validation error
+                      }
+                    : { method: 'GET' };
+
+            const response = await fetch(endpoint, fetchOptions);
             const data = await response
                 .json()
                 .catch(() => ({ error: 'Unknown error' }));
@@ -91,7 +117,10 @@ export function ErrorButtons() {
                     ...prev,
                     [type]: {
                         loading: false,
-                        result: data.error || data.message || 'Error occurred',
+                        result:
+                            data.error ||
+                            data.message ||
+                            `HTTP ${response.status}: ${response.statusText}`,
                         isError: true
                     }
                 }));
@@ -123,35 +152,49 @@ export function ErrorButtons() {
     const buttonConfig = [
         {
             type: 'js-error' as ErrorType,
-            label: 'Trigger JS Error (BE)',
+            label: 'Null Reference Error',
             endpoint: '/api/error',
             icon: AlertCircle,
             variant: 'destructive' as const
         },
         {
             type: 'db-error' as ErrorType,
-            label: 'Trigger DB Error (BE)',
+            label: 'Database Error',
             endpoint: '/api/db-error',
             icon: Database,
             variant: 'destructive' as const
         },
         {
             type: 'timeout' as ErrorType,
-            label: 'Trigger Timeout (BE)',
+            label: 'API Timeout',
             endpoint: '/api/timeout',
             icon: Clock,
             variant: 'destructive' as const
         },
         {
+            type: 'validation-error' as ErrorType,
+            label: 'Validation Error',
+            endpoint: '/api/validation-error',
+            icon: FileX,
+            variant: 'destructive' as const
+        },
+        {
+            type: 'auth-error' as ErrorType,
+            label: 'Auth Error',
+            endpoint: '/api/auth-error',
+            icon: Shield,
+            variant: 'destructive' as const
+        },
+        {
             type: 'client-js-error' as ErrorType,
-            label: 'Trigger JS Error (FE)',
+            label: 'Client TypeError',
             endpoint: undefined,
             icon: AlertCircle,
             variant: 'destructive' as const
         },
         {
             type: 'client-promise-error' as ErrorType,
-            label: 'Trigger Promise Error (FE)',
+            label: 'Unhandled Promise',
             endpoint: undefined,
             icon: AlertCircle,
             variant: 'destructive' as const
@@ -160,7 +203,7 @@ export function ErrorButtons() {
 
     return (
         <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+            <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {buttonConfig.map(
                     ({ type, label, endpoint, icon: Icon, variant }, index) => (
                         <motion.div
