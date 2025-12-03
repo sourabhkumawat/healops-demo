@@ -63,6 +63,7 @@ export function ErrorButtons() {
             // Common mistake: Not checking if data exists before accessing nested properties
             setTimeout(() => {
                 const userData = null; // Simulating failed API response
+                // @ts-expect-error - Intentional error for demo purposes
                 const userName = userData.profile.name; // TypeError: Cannot read property 'profile' of null
                 console.log(userName); // This never executes
             }, 0);
