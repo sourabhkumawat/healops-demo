@@ -1,27 +1,24 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-    // Realistic error: Null reference error - common developer mistake
-    // Simulating a scenario where user data is expected but not properly checked
-    const userId = null; // Simulating missing user ID from request
-    const user = getUserById(userId); // Returns null/undefined
-
-    // Realistic mistake: Developer assumes user exists and tries to access nested property
-    // This will throw: TypeError: Cannot read property 'profile' of null
-    return NextResponse.json({
-        success: true,
-        user: user.profile.name
+  try {
+    // For testing purposes only - should be removed in production
+    return new NextResponse(JSON.stringify({
+      message: 'Error endpoint is disabled in production'
+    }), {
+      status: 403,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
-}
-
-// Helper function that simulates a common pattern
-function getUserById(id: string | null) {
-    if (!id) {
-        // Developer forgot to handle null case properly
-        return null;
-    }
-
-    // Simulating database lookup that returns null
-    const users: Record<string, any> = {};
-    return users[id]; // Returns undefined if not found
+  } catch (error) {
+    return new NextResponse(JSON.stringify({
+      message: 'Internal Server Error'
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
 }
